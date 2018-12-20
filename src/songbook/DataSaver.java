@@ -16,7 +16,13 @@ import songbook.data.Songbook;
  */
 public class DataSaver {
 
-    public Songbook readSongbook(InputStream is) {
+    public static class DataException extends Exception {
+        public DataException(String reason) {
+            super(reason);
+        }
+    }
+
+    public Songbook readSongbook(InputStream is) throws DataException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(is));
         Songbook book = new Songbook();
         book.setArtists(new ArrayList<>());
@@ -27,7 +33,9 @@ public class DataSaver {
         Artist currentArtist = null;
         Album currentAlbum = null;
         try {
+            int i = 1;
             while ((line = bf.readLine()) != null) {
+                // line = line.trim(); - naprawiamy linie ze spacjami na końcu
                 if (readingArtistName) {
                     currentArtist = new Artist();
                     currentArtist.setName(line);
@@ -50,11 +58,14 @@ public class DataSaver {
                         readingAlbumName = true;
                     } else if ("#".equals(line)) {
                         readingSong = true;
+                    } else {
+                        throw new DataException("Error in line " + i + ", expected ###, ## or #, got \"" + line + "\"");
                     }
                 }
+                i++;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DataException("Error reading from file: " + e.getMessage());
         }
         return book;
     }

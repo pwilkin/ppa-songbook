@@ -25,4 +25,17 @@ public class Artist {
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (albums != null) {
+            sb.append("[").append(name).append("]\n");
+            for (int i = 0; i < albums.size(); i++) {
+                sb.append(albums.get(i));
+                sb.append("\n--\n");
+            }
+        }
+        return sb.toString();
+    }
 }

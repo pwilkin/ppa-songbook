@@ -23,4 +23,9 @@ public class Song {
     public void setLyrics(String lyrics) {
         this.lyrics = lyrics;
     }
+
+    @Override
+    public String toString() {
+        return title + "\n\n" + lyrics + "\n";
+    }
 }

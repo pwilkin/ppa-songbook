@@ -16,4 +16,16 @@ public class Songbook {
     public void setArtists(List<Artist> artists) {
         this.artists = artists;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (artists != null) {
+            for (int i = 0; i < artists.size(); i++) {
+                sb.append(artists.get(i));
+                sb.append("\n---\n");
+            }
+        }
+        return sb.toString();
+    }
 }

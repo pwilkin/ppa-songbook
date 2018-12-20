@@ -25,4 +25,17 @@ public class Album {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (songs != null) {
+            sb.append(">").append(name).append("<\n");
+            for (int i = 0; i < songs.size(); i++) {
+                sb.append(songs.get(i));
+                sb.append("\n\n");
+            }
+        }
+        return sb.toString();
+    }
 }
