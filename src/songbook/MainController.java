@@ -10,14 +10,18 @@ import java.nio.file.Paths;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import songbook.DataSaver.DataException;
 import songbook.data.Songbook;
 
-public class Controller {
+public class MainController {
 
     @FXML
     protected Button chooser;
@@ -27,6 +31,8 @@ public class Controller {
 
     @FXML
     protected Button def;
+
+    protected DataStorage dataStorage = new DataStorage();
 
     protected File selectedFile;
 
@@ -43,9 +49,16 @@ public class Controller {
     public void process(ActionEvent actionEvent) {
         try (FileInputStream fis = new FileInputStream(selectedFile)) {
             Songbook songbook = new DataSaver().readSongbook(fis);
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setContentText(songbook.toString());
-            alert.show();
+            dataStorage.setSongbook(songbook);
+            Stage stage = (Stage) chooser.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("songbook.fxml"));
+            Parent root = loader.load();
+            stage.setTitle("Songbook");
+            stage.setScene(new Scene(root, 897, 570));
+            stage.show();
+            stage.centerOnScreen();
+            SongbookController sc = loader.getController();
+            sc.setDataStorage(dataStorage);
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setContentText("File not found: " + e.getMessage());
