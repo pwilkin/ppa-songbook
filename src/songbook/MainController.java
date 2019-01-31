@@ -34,20 +34,18 @@ public class MainController {
 
     protected DataStorage dataStorage = new DataStorage();
 
-    protected File selectedFile;
-
     public void showChooseDialog(ActionEvent actionEvent) {
         FileChooser fc = new FileChooser();
         File file = fc.showOpenDialog(chooser.getScene().getWindow());
         if (file != null && file.exists()) {
-            selectedFile = file;
+            dataStorage.setSelectedFile(file);
             processor.setDisable(false);
             chooser.setText(file.getAbsolutePath());
         }
     }
 
     public void process(ActionEvent actionEvent) {
-        try (FileInputStream fis = new FileInputStream(selectedFile)) {
+        try (FileInputStream fis = new FileInputStream(dataStorage.getSelectedFile())) {
             Songbook songbook = new DataSaver().readSongbook(fis);
             dataStorage.setSongbook(songbook);
             Stage stage = (Stage) chooser.getScene().getWindow();
@@ -86,9 +84,9 @@ public class MainController {
             if (!Files.exists(songsFile)) {
                 Files.createFile(songsFile);
             }
-            selectedFile = songsFile.toFile();
+            dataStorage.setSelectedFile(songsFile.toFile());
             processor.setDisable(false);
-            chooser.setText(selectedFile.getAbsolutePath());
+            chooser.setText(dataStorage.getSelectedFile().getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

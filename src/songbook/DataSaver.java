@@ -4,7 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import songbook.data.Album;
 import songbook.data.Artist;
@@ -20,6 +25,25 @@ public class DataSaver {
         public DataException(String reason) {
             super(reason);
         }
+    }
+
+    public void writeSongbook(Songbook songbook, OutputStream os) {
+        StringBuilder sb = new StringBuilder();
+        for (Artist artist : songbook.getArtists()) {
+            sb.append("###\n").append(artist.getName()).append("\n");
+            for (Album album : artist.getAlbums()) {
+                sb.append("##\n").append(album.getName()).append("\n");
+                for (Song song : album.getSongs()) {
+                    sb.append("#\n").append(song.getTitle()).append("#").append(
+                        Arrays.stream(song.getLyrics().split("\n")).map(x -> x.replaceAll("#", "\\#"))
+                            .collect(Collectors.joining("#"))
+                    ).append("\n");
+                }
+            }
+        }
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(os));
+        pw.print(sb.toString());
+        pw.flush();
     }
 
     public Songbook readSongbook(InputStream is) throws DataException {
