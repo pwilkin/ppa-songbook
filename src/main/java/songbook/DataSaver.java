@@ -11,6 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.AreaBreak;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
+
 import songbook.data.Album;
 import songbook.data.Artist;
 import songbook.data.Song;
@@ -20,6 +28,24 @@ import songbook.data.Songbook;
  * Created by pwilkin on 13-Dec-18.
  */
 public class DataSaver {
+
+    public void exportSongbookToPdf(Songbook songbook, PdfDocument pdfDocument) throws IOException {
+        try (Document document = new Document(pdfDocument)) {
+            for (Artist artist : songbook.getArtists()) {
+                for (Album album : artist.getAlbums()) {
+                    for (Song song : album.getSongs()) {
+                        String title = artist.getName() + " - " + album.getName() + " - " + song.getTitle();
+                        Paragraph tpara = new Paragraph();
+                        tpara.setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD));
+                        tpara.add(new Text(title).setFontSize(22.0f));
+                        document.add(tpara);
+                        document.add(new Paragraph(song.getLyrics()));
+                        document.add(new AreaBreak());
+                    }
+                }
+            }
+        }
+    }
 
     public static class DataException extends Exception {
         public DataException(String reason) {

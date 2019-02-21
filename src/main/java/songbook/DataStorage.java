@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+
 import songbook.data.Songbook;
 
 /**
@@ -34,5 +37,21 @@ public class DataStorage {
         try (FileOutputStream fos = new FileOutputStream(selectedFile)) {
             new DataSaver().writeSongbook(songbook, fos);
         }
+    }
+
+    public void saveToPdf() {
+        String absPath = selectedFile.getAbsolutePath();
+        if (absPath.endsWith(".txt")) {
+            absPath = absPath.substring(0, absPath.length() - 4) + ".pdf";
+        } else {
+            throw new IllegalArgumentException("Don't know how to transform file name: " + absPath);
+        }
+        try {
+            PdfDocument pdfDocument = new PdfDocument(new PdfWriter(absPath));
+            new DataSaver().exportSongbookToPdf(songbook, pdfDocument);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -43,6 +43,8 @@ public class SongbookController {
     protected TextArea songText;
     @FXML
     protected Button save;
+    @FXML
+    protected Button pdf;
 
     protected DataStorage dataStorage;
     protected Artist selectedArtist;
@@ -231,6 +233,21 @@ public class SongbookController {
             selectedAlbum.getSongs().add(added);
             loadSongs(selectedAlbum.getName());
             songs.getSelectionModel().select(added.getTitle());
+        }
+    }
+
+    public void saveToPdf(ActionEvent actionEvent) {
+        try {
+            getDataStorage().saveToPdf();
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Data saved");
+            alert.setContentText("The songbook data has been successfully exported to the PDF file!");
+            alert.showAndWait();
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Data save error");
+            alert.setContentText("There was an error exporting the data: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 }

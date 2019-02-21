@@ -38,7 +38,8 @@
       </HBox>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button fx:id="save" contentDisplay="TOP" layoutX="424.0" layoutY="8.0" mnemonicParsing="false" onAction="#saveSong" text="Save" />
+            <Button fx:id="save" contentDisplay="TOP" layoutX="388.0" layoutY="8.0" mnemonicParsing="false" onAction="#saveSong" text="Save" />
+            <Button fx:id="pdf" layoutX="439.0" layoutY="8.0" mnemonicParsing="false" onAction="#saveToPdf" text="Export to PDF" />
          </children>
       </AnchorPane>
    </children>
