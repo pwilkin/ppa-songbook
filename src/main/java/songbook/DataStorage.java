@@ -41,6 +41,10 @@ public class DataStorage {
 
     public void saveToPdf() {
         String absPath = selectedFile.getAbsolutePath();
+        savePdfToFile(absPath);
+    }
+
+    public void savePdfToFile(String absPath) {
         if (absPath.endsWith(".txt")) {
             absPath = absPath.substring(0, absPath.length() - 4) + ".pdf";
         } else {
@@ -52,6 +56,5 @@ public class DataStorage {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }
