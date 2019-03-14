@@ -1,7 +1,6 @@
 package songbook;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -70,12 +69,14 @@ public class DataSaverTest {
         }
     }
 
+/*
     @Test
     public void testWriteASong() {
         // ...
         ByteArrayOutputStream baos = null; // zmienić!
         String fromBaos = baos.toString();
     }
+*/
 
     @Test(expected = DataException.class)
     public void testDoNotReadASong() throws DataException {
