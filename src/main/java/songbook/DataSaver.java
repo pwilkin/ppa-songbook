@@ -19,6 +19,7 @@ import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 
+import songbook.dao.ArtistDAO;
 import songbook.data.Album;
 import songbook.data.Artist;
 import songbook.data.Song;
@@ -45,6 +46,18 @@ public class DataSaver {
                 }
             }
         }
+    }
+
+    public void writeSongbookToDatabase(Songbook songbook) {
+        for (Artist artist : songbook.getArtists()) {
+            ArtistDAO.getInstance().saveArtist(artist);
+        }
+    }
+
+    public Songbook readSongbookFromDatabase() {
+        Songbook songbook = new Songbook();
+        songbook.setArtists(ArtistDAO.getInstance().loadAllArtists());
+        return songbook;
     }
 
     public static class DataException extends Exception {

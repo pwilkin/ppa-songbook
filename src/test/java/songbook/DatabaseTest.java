@@ -45,23 +45,23 @@ public class DatabaseTest {
     @Test
     public void testTransaction() {
         try (Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:mymemdb", "SA", "")) {
-            c.createStatement().execute("CREATE TABLE TEXT (ID INT IDENTITY PRIMARY KEY, BLA VARCHAR(200))");
+            c.createStatement().execute("CREATE TABLE TEXT2 (ID INT IDENTITY PRIMARY KEY, BLA VARCHAR(200))");
             for (int i = 0; i < 100; i++) {
-                try (PreparedStatement ps = c.prepareStatement("INSERT INTO TEXT (BLA) VALUES (?)")) {
+                try (PreparedStatement ps = c.prepareStatement("INSERT INTO TEXT2 (BLA) VALUES (?)")) {
                     ps.setString(1, "test '" + i);
                     ps.execute();
                 }
             }
             c.setAutoCommit(false); // POCZĄTEK TRANSAKCJI
             try {
-                try (PreparedStatement ps = c.prepareStatement("UPDATE TEXT SET BLA=? WHERE ID=?")) {
+                try (PreparedStatement ps = c.prepareStatement("UPDATE TEXT2 SET BLA=? WHERE ID=?")) {
                     ps.setString(1, "HAHAHA");
                     ps.setInt(2, 15);
                     ps.execute();
                     ps.setInt(2, 30);
                     ps.execute();
                 }
-                try (PreparedStatement ps = c.prepareStatement("SELECT * FROM TEXT WHERE ID=?")) {
+                try (PreparedStatement ps = c.prepareStatement("SELECT * FROM TEXT2 WHERE ID=?")) {
                     ps.setInt(1, 15);
                     try (ResultSet rs = ps.executeQuery()) {
                         rs.next();
@@ -72,7 +72,7 @@ public class DatabaseTest {
             } catch (Exception e) {
                 c.rollback(); // WYSTĄPIŁ BŁĄD, WIEC COFAMY
             }
-            try (PreparedStatement ps = c.prepareStatement("SELECT * FROM TEXT WHERE ID=?")) {
+            try (PreparedStatement ps = c.prepareStatement("SELECT * FROM TEXT2 WHERE ID=?")) {
                 ps.setInt(1, 15);
                 try (ResultSet rs = ps.executeQuery()) {
                     rs.next();

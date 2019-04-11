@@ -45,18 +45,28 @@ public class MainController {
     }
 
     public void process(ActionEvent actionEvent) {
+        Stage stage = (Stage) chooser.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("songbook.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Input/output exception: " + e.getMessage());
+            alert.show();
+        }
+        stage.setTitle("Songbook");
+        stage.setScene(new Scene(root, 897, 570));
+        stage.show();
+        stage.centerOnScreen();
+        SongbookController sc = loader.getController();
+        sc.setDataStorage(dataStorage);
+    }
+
+    public void loadData() {
         try (FileInputStream fis = new FileInputStream(dataStorage.getSelectedFile())) {
             Songbook songbook = new DataSaver().readSongbook(fis);
             dataStorage.setSongbook(songbook);
-            Stage stage = (Stage) chooser.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("songbook.fxml"));
-            Parent root = loader.load();
-            stage.setTitle("Songbook");
-            stage.setScene(new Scene(root, 897, 570));
-            stage.show();
-            stage.centerOnScreen();
-            SongbookController sc = loader.getController();
-            sc.setDataStorage(dataStorage);
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setContentText("File not found: " + e.getMessage());
@@ -86,10 +96,20 @@ public class MainController {
             }
             dataStorage.setSelectedFile(songsFile.toFile());
             processor.setDisable(false);
-            chooser.setText(dataStorage.getSelectedFile().getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void migrateDefault(ActionEvent actionEvent) {
+        loadDefault(actionEvent);
+        loadData();
+        dataStorage.saveDataToDB();
+    }
+
+    public void loadFromDB(ActionEvent actionEvent) {
+        dataStorage.loadDataFromDB();
+        processor.setDisable(false);
     }
 }

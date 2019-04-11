@@ -2,6 +2,7 @@ package songbook.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class SongDAO {
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM SONGS WHERE ID=?")) {
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
-                if (rs.first()) {
+                if (rs.next()) {
                     Song song = new Song();
                     song.setId(id);
                     song.setTitle(rs.getString("TITLE"));
@@ -58,13 +59,14 @@ public final class SongDAO {
     public void saveSong(Song song, Album album) {
         DatabaseConnection.getInstance().runInTransaction(con -> {
             if (song.getId() == null) {
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO SONGS (TITLE, LYRICS, ALBUM) VALUES (?, ?, ?)")) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO SONGS (TITLE, LYRICS, ALBUM) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, song.getTitle());
                     ps.setString(2, song.getLyrics());
                     ps.setInt(3, album.getId());
                     ps.execute();
                     /* wyciągnij wartość kolumny ID dla nowo utworzonego wpisu bazodanowego */
                     ResultSet genKeys = ps.getGeneratedKeys();
+                    genKeys.next();
                     song.setId(genKeys.getInt(1)); /* pierwszy i jedyny wygenerowany klucz, bo mamy tylko jedną kolumnę IDENTITY */
                     loadedSongs.put(song.getId(), song);
                 }

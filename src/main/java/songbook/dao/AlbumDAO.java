@@ -2,6 +2,7 @@ package songbook.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class AlbumDAO {
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM ALBUMS WHERE ID=?")) {
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
-                if (rs.first()) {
+                if (rs.next()) {
                     Album album = new Album();
                     album.setId(id);
                     album.setName(rs.getString("NAME"));
@@ -57,12 +58,13 @@ public final class AlbumDAO {
     public void saveAlbum(Album album, Artist artist) {
         DatabaseConnection.getInstance().runInTransaction(con -> {
             if (album.getId() == null) {
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO ALBUMS (NAME, ARTIST) VALUES (?, ?)")) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO ALBUMS (NAME, ARTIST) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, album.getName());
                     ps.setInt(2, artist.getId());
                     ps.execute();
                     /* wyciągnij wartość kolumny ID dla nowo utworzonego wpisu bazodanowego */
                     ResultSet genKeys = ps.getGeneratedKeys();
+                    genKeys.next();
                     album.setId(genKeys.getInt(1)); /* pierwszy i jedyny wygenerowany klucz, bo mamy tylko jedną kolumnę IDENTITY */
                     loadedAlbums.put(album.getId(), album);
                 }
@@ -75,6 +77,7 @@ public final class AlbumDAO {
                 }
             }
         });
+        album.getSongs().forEach(x -> SongDAO.getInstance().saveSong(x, album));
     }
 
     public List<Album> loadAlbumsByArtist(Integer id) {

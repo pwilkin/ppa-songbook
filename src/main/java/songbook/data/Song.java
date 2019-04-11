@@ -1,10 +1,15 @@
 package songbook.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * Created by pwilkin on 13-Dec-18.
  */
+@Entity
 public class Song {
 
+    @Id
     protected Integer id;
     protected String title;
     protected String lyrics;

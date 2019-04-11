@@ -1,6 +1,5 @@
 package songbook;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -157,12 +156,12 @@ public class SongbookController {
 
     public void saveSong(ActionEvent actionEvent) {
         try {
-            getDataStorage().saveData();
+            getDataStorage().saveDataToDB();
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Data saved");
             alert.setContentText("The songbook data has been successfully saved!");
             alert.showAndWait();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Data save error");
             alert.setContentText("There was an error saving the data: " + e.getMessage());

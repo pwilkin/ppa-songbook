@@ -3,6 +3,8 @@ package songbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -40,21 +42,28 @@ public class DataStorage {
     }
 
     public void saveToPdf() {
-        String absPath = selectedFile.getAbsolutePath();
+        String userHomeDir = System.getProperty("user.home");
+        Path homeDir = Paths.get(userHomeDir);
+        Path subdir = homeDir.resolve(".songbook");
+        Path songsFile = subdir.resolve("songbook.pdf");
+        String absPath = songsFile.toAbsolutePath().toString();
         savePdfToFile(absPath);
     }
 
     public void savePdfToFile(String absPath) {
-        if (absPath.endsWith(".txt")) {
-            absPath = absPath.substring(0, absPath.length() - 4) + ".pdf";
-        } else {
-            throw new IllegalArgumentException("Don't know how to transform file name: " + absPath);
-        }
         try {
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(absPath));
             new DataSaver().exportSongbookToPdf(songbook, pdfDocument);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void saveDataToDB() {
+        new DataSaver().writeSongbookToDatabase(songbook);
+    }
+
+    public void loadDataFromDB() {
+        songbook = new DataSaver().readSongbookFromDatabase();
     }
 }

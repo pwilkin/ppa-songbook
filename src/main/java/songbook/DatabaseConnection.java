@@ -53,7 +53,7 @@ public class DatabaseConnection {
             if (!tbl.first()) {
                 con.createStatement().execute("CREATE TABLE ARTISTS (ID INT PRIMARY KEY IDENTITY, NAME VARCHAR(255))");
                 con.createStatement().execute("CREATE TABLE ALBUMS (ID INT PRIMARY KEY IDENTITY, ARTIST INT, NAME VARCHAR(255))");
-                con.createStatement().execute("CREATE TABLE SONGS (ID INT PRIMARY KEY IDENTITY, ALBUM INT, TITLE VARCHAR(255), LYRICS TEXT)");
+                con.createStatement().execute("CREATE TABLE SONGS (ID INT PRIMARY KEY IDENTITY, ALBUM INT, TITLE VARCHAR(255), LYRICS LONGVARCHAR)");
             }
         });
     }

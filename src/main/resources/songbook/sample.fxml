@@ -15,8 +15,8 @@
       <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
    </columnConstraints>
    <children>
-      <Button fx:id="chooser" mnemonicParsing="false" onAction="#showChooseDialog" text="Choose file..." GridPane.halignment="CENTER" />
+      <Button fx:id="chooser" mnemonicParsing="false" onAction="#migrateDefault" text="Migrate default" GridPane.halignment="CENTER" />
       <Button fx:id="processor" disable="true" mnemonicParsing="false" onAction="#process" text="Process" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-      <Button fx:id="def" mnemonicParsing="false" onAction="#loadDefault" text="Load default" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+      <Button fx:id="def" mnemonicParsing="false" onAction="#loadFromDB" text="Load from DB" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
    </children>
 </GridPane>
