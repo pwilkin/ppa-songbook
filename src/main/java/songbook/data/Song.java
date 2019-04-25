@@ -1,6 +1,9 @@
 package songbook.data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -10,8 +13,10 @@ import javax.persistence.Id;
 public class Song {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     protected Integer id;
     protected String title;
+    @Column(length = 8000)
     protected String lyrics;
 
     public Integer getId() {

@@ -1,17 +1,26 @@
 package songbook.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import songbook.dao.AlbumDAO;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * Created by pwilkin on 13-Dec-18.
  */
+@Entity
 public class Artist {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     protected Integer id;
     protected String name;
+
+    @OneToMany(targetEntity = Album.class, cascade = CascadeType.ALL)
     protected List<Album> albums;
 
     public Integer getId() {
@@ -31,13 +40,6 @@ public class Artist {
     }
 
     public List<Album> getAlbums() {
-        if (albums == null) {
-            if (id == null) {
-                albums = new ArrayList<>();
-            } else {
-                albums = AlbumDAO.getInstance().loadAlbumsByArtist(id);
-            }
-        }
         return albums;
     }
 
