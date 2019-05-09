@@ -103,13 +103,25 @@ public class MainController {
     }
 
     public void migrateDefault(ActionEvent actionEvent) {
-        loadDefault(actionEvent);
-        loadData();
-        dataStorage.saveDataToDB();
+        try {
+            loadDefault(actionEvent);
+            loadData();
+            dataStorage.saveDataToDB();
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Error migrating data: " + e.getMessage());
+            alert.show();
+        }
     }
 
     public void loadFromDB(ActionEvent actionEvent) {
-        dataStorage.loadDataFromDB();
-        processor.setDisable(false);
+        try {
+            dataStorage.loadDataFromDB();
+            processor.setDisable(false);
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Error loading data: " + e.getMessage());
+            alert.show();
+        }
     }
 }

@@ -62,6 +62,7 @@ public class DataSaver {
             } catch (Exception e) {
                 e.printStackTrace();
                 em.getTransaction().rollback();
+                throw new RuntimeException(e);
             }
         });
     }
@@ -72,6 +73,21 @@ public class DataSaver {
             songbook.setArtists(em.createQuery("from Artist", Artist.class).getResultList());
         });
         return songbook;
+    }
+
+    public void deleteFromDatabase(Artist artist) {
+        DatabaseConnection.getInstance().runInORM(em -> {
+            try {
+                em.getTransaction().begin();
+                em.remove(artist);
+                em.flush();
+                em.getTransaction().commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                em.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static class DataException extends Exception {

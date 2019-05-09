@@ -5,10 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Objects;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 
+import songbook.data.Artist;
 import songbook.data.Songbook;
 
 /**
@@ -65,5 +68,17 @@ public class DataStorage {
 
     public void loadDataFromDB() {
         songbook = new DataSaver().readSongbookFromDatabase();
+    }
+
+    public void doDeleteArtist(String selectedItem) {
+        Iterator<Artist> iter = songbook.getArtists().iterator();
+        while (iter.hasNext()) {
+            Artist artist = iter.next();
+            if (Objects.equals(selectedItem, artist.getName())) {
+                new DataSaver().deleteFromDatabase(artist);
+                iter.remove();
+                break;
+            }
+        }
     }
 }

@@ -8,9 +8,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import songbook.data.Album;
 import songbook.data.Artist;
 import songbook.data.Song;
@@ -66,6 +70,23 @@ public class SongbookController {
         }
         toggleEditors(false, false);
         clearArtist();
+
+        ContextMenu cm = new ContextMenu();
+        MenuItem mi1 = new MenuItem("Delete");
+        mi1.setOnAction(event -> handleDelete(artists.getSelectionModel().getSelectedItem()));
+        cm.getItems().add(mi1);
+
+        artists.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+            if(t.getButton() == MouseButton.SECONDARY) {
+                cm.show(artists, t.getScreenX(), t.getScreenY());
+            }
+        });
+
+    }
+
+    private void handleDelete(String selectedItem) {
+        dataStorage.doDeleteArtist(selectedItem);
+        loadArtists();
     }
 
     private void clearArtist() {
